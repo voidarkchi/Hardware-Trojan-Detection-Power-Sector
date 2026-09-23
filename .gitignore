@@ -1,0 +1,8 @@
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+
+HEROdata2.xlsx
+
+final_trojan_predictions.csv
+final_trojan_predictions.xlsx

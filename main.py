@@ -14,9 +14,6 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.metrics import f1_score
 from sklearn.metrics import confusion_matrix
 from xgboost import XGBClassifier
-from keras.models import Sequential
-from keras.layers import Dense
-from keras.utils import np_utils as npu
 
     
 def create_model(train_x, test_y):
@@ -39,6 +36,9 @@ def multilayer_perceptron():
     """
     This function performs multiclass classification with multilayer_perceptron
     """
+    from keras.models import Sequential
+    from keras.layers import Dense
+    from keras.utils import np_utils as npu
     train_x, test_x, train_y, test_y = prepare_data()
 
     labels = test_y

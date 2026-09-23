@@ -35,7 +35,7 @@ def prepare_data():
         df1 = circuit_group.iloc[0:1]
         
         if len(circuit_group) > 1:
-            data = data.append([df1]*(len(circuit_group)-1), ignore_index=True)
+            data = pd.concat([data] + [df1] * (len(circuit_group) - 1), ignore_index=True)
     
     data.drop(columns=['Circuit'], inplace=True)
 
