@@ -1,51 +1,88 @@
-# Machine Learning Techniques for Hardware Trojan Detection 
+# Hardware Trojan Detection for Power-Sector Hardware
 
-### The problem
+## Overview
 
-- Rapid development of technology drives companies to design and fabricate their ICs in non-trustworthy outsourcing foundries to reduce the cost
-- There is space for a synchronous form of virus, known as Hardware Trojan (HT), to be developed. HTs leak encrypted information, degrade device performance or lead to total destruction.
+Hardware Trojans are malicious modifications embedded into integrated circuits that may alter functionality, leak sensitive information, or affect circuit behaviour.
 
-### Description of CasLab-HT algorithm
+This project develops a machine-learning based approach for detecting hardware Trojans from circuit-level structural and power characteristics. The project focuses on a software-based detection pipeline using an existing benchmark dataset rather than requiring physical hardware.
 
-- We used the design tool, Design Compiler NXT from Synopsys for the dataset's feature extraction
-- The features consist via area and power characteristics of the circuits. In total they were used 50 area and power features.
-- 7 Machine Learning models for the detection and classification of Trojan Free and Trojan Infected circuits, based on Gate Level Netlist phase and features for Application Specific Integrated Circuit (ASIC) circuits.
+The system uses **Random Forest classification** together with **circuit-family-based clean baselines** to identify deviations associated with Trojan-infected circuits.
 
-## Prerequisites
-Install the libraries below used by the project by entering in console the following command:
+---
 
-  ```pip3 install pandas matplotlib keras scikit-learn numpy more-tertools seaborn xgboost```
-  
-Clone the repository locally by entering in console the following command:
+## Problem Statement
 
-  ```git clone https://github.com/Kkalais/Hardware-Trojan-Detection.git```
- 
-## Run
- 
-We are using **Gradient Boosting, XGBoost, Logistic Regression, K-Nearest Neighbors, Support-Vectors Machine, Random Forest, and Multilayer Perceptron Neural Network** to classify the samples into Trojan Free and Trojan Infected circuits.
- 
-In order to run the code using the above-mentioned algorithms just enter in console the following commands :
- 
-  ```python3 main.py gradient_goosting```
-  
-  ```python3 main.py xgboost```
- 
-  ```python3 main.py logistic_regression```
-  
-  ```python3 main.py k_neighbors```
-  
-  ```python3 main.py svm```
- 
-  ```python3 main.py random_forest```
- 
-  ```python3 main.py mlp```
-  
-respectively.
+Hardware Trojans can remain difficult to detect because their effects may be small compared with the overall characteristics of a legitimate circuit.
 
-There is also a mode that runs all four algorithms consecutively, and produces a bar plot to compare the algorithms' results. Please enter in console:
+Traditional hardware-level inspection and physical verification can be expensive and difficult to scale. This project investigates whether measurable circuit characteristics such as structural properties and power-related features can be used for automated Trojan detection.
 
-```python3 main.py comparative```
+---
 
-## Authors
+## Dataset
 
-* **Konstantinos Kalais**, *Developer* 
+The project uses the `HEROdata2.xlsx` dataset containing circuit-level hardware characteristics.
+
+Each record contains:
+
+- 49 numerical hardware features
+- `Label` — Trojan Free / Trojan Infected
+- `Circuit` — circuit identifier
+
+The numerical features include structural and power characteristics such as:
+
+- Number of references
+- Number of cells
+- Number of nets
+- Number of ports
+- Number of sequential cells
+- Switching power
+- Internal power
+- Total power
+
+The dataset contains multiple Trojan variants belonging to different circuit families.
+
+### Dataset preprocessing
+
+The dataset is processed using the following steps:
+
+1. Clean label and circuit-name values.
+2. Remove duplicate records.
+3. Identify the circuit family from the circuit identifier.
+4. Identify circuit families containing Trojan-Free reference circuits.
+5. Exclude families for which no clean baseline is available.
+6. Handle missing numerical values using median imputation.
+
+After preprocessing:
+
+- 907 original records
+- 903 unique records
+- 880 records with usable clean-family baselines
+- 862 Trojan Infected
+- 18 Trojan Free
+
+---
+
+## Proposed Methodology
+
+The detection pipeline consists of:
+
+```text
+HEROdata2 Dataset
+        ↓
+Data Cleaning
+        ↓
+Duplicate Removal
+        ↓
+Circuit Family Identification
+        ↓
+Trojan-Free Family Baseline
+        ↓
+Baseline-Based Feature Normalization
+        ↓
+Random Forest Classifier
+        ↓
+Trojan Probability
+        ↓
+0.70 Decision Threshold
+        ↓
+Trojan Free / Trojan Infected
